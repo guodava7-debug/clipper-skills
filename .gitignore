@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# 运行期状态。正常情况下不会出现在这里（已外置到 $WEB_CLIP_HOME /
+# $NOTE_VAULT_HOME），但从旧版本升级前的目录里可能还残留一份。
+state/

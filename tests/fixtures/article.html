@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>如何给 Agent Skill 划边界 - 示例站</title>
+  <meta name="author" content="示例作者">
+  <meta property="article:published_time" content="2026-08-12T09:00:00+08:00">
+  <meta property="og:site_name" content="示例站">
+  <meta property="og:image" content="https://cdn.example.com/cover.png">
+  <script>var tracking = 1;</script>
+  <style>.hidden { display: none }</style>
+</head>
+<body>
+  <nav class="navbar"><a href="/">首页</a><a href="/about">关于</a></nav>
+  <div class="ad-banner">广告位招租</div>
+  <article class="post-content">
+    <h1>如何给 Agent Skill 划边界</h1>
+    <p>一个 skill 承担的职责越多，它的描述就越模糊，路由就越不准。把采集和整理拆开之后，
+    每个 skill 的触发条件都能用一句话说清楚，这是拆分带来的最直接的好处。</p>
+    <h2>边界在哪里</h2>
+    <p>边界应该落在数据交接的地方。采集侧产出一个自包含的目录，整理侧只读这个目录，
+    两边不共享任何进程内状态，也不共享网络假设。</p>
+    <figure>
+      <img src="/images/diagram.png" alt="架构示意图">
+      <figcaption>两个 skill 的交接面</figcaption>
+    </figure>
+    <h2>为什么正文不可变</h2>
+    <p>正文一旦写入就不再改动，可变的只有卡片字段。这样任何一次重新总结都不会破坏原文，
+    也让去重可以稳定地依赖内容哈希。</p>
+    <pre><code>clip.py fetch https://example.com/post
+vault.py commit &lt;clip&gt; --dest note.md</code></pre>
+    <table>
+      <tr><th>阶段</th><th>负责的 skill</th></tr>
+      <tr><td>抓取清洗</td><td>web-clip</td></tr>
+      <tr><td>归档卡片</td><td>note-vault</td></tr>
+    </table>
+    <p>最后一点：把运行期状态放在 skill 目录之外，升级才不会连带删掉用户数据。</p>
+  </article>
+  <div class="related">推荐阅读：另一篇文章</div>
+  <div class="comments"><p>第一条评论</p></div>
+  <footer class="footer">版权所有 © 示例站</footer>
+</body>
+</html>

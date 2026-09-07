@@ -1,0 +1,25 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The floor is what the skills claim to support; the ceiling is what
+        # users actually have.
+        python-version: ["3.8", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r web-clip/requirements.txt
+      - name: Compile both skills
+        run: python -m compileall -q web-clip/scripts note-vault/scripts
+      - name: Run the offline test suite
+        run: python -m unittest discover -s tests -v

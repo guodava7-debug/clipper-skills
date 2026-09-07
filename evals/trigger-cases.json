@@ -1,0 +1,29 @@
+{
+  "purpose": "衡量两个 skill 的 description 触发是否准确。description 是唯一常驻上下文的部分，改动它等于改动路由——所以每次改完都该跑一遍这组用例，而不是凭感觉。",
+  "how_to_run": "在一个干净的 agent 会话里逐条发送 query，记录实际加载了哪些 skill，与 expect 比对。误触发（不该加载却加载了）比漏触发更贵，因为它会白白吃掉上下文并可能改动用户的知识库。",
+  "target": "should_trigger 全中；should_not_trigger 零误触。任一项不达标就回去改 description，不要改用例迁就实现。",
+  "cases": [
+    {"query": "剪藏这个文章：https://mp.weixin.qq.com/s/abc", "expect": ["web-clip"]},
+    {"query": "帮我把这个链接存下来 https://example.com/post", "expect": ["web-clip"]},
+    {"query": "把这篇转成 markdown：https://arxiv.org/abs/2501.00001", "expect": ["web-clip"]},
+    {"query": "https://x.com/someone/status/123 抓一下", "expect": ["web-clip"]},
+
+    {"query": "剪藏并整理这个文章：https://example.com/post", "expect": ["web-clip", "note-vault"]},
+    {"query": "把这个链接收藏进知识库 https://example.com/post", "expect": ["web-clip", "note-vault"]},
+
+    {"query": "整理一下我的知识库", "expect": ["note-vault"]},
+    {"query": "从收藏里找关于 agent 评测的资料", "expect": ["note-vault"]},
+    {"query": "把 ~/notes/meeting.md 归档进知识库", "expect": ["note-vault"]},
+    {"query": "这篇笔记归类错了，应该放在 AI 目录下", "expect": ["note-vault"]},
+    {"query": "重写这篇笔记的使用说明", "expect": ["note-vault"]},
+    {"query": "以后默认存到 ~/Obsidian/Vault", "expect": ["note-vault"]},
+
+    {"query": "https://example.com/post 这篇讲了什么？", "expect": [], "why": "只是问内容，不是要落盘"},
+    {"query": "帮我总结一下 ~/Downloads/report.pdf", "expect": [], "why": "本地文件总结，不涉及抓取或入库"},
+    {"query": "这个 API 文档里 retry 参数怎么用 https://docs.example.com/api", "expect": [], "why": "查资料而非收藏"},
+    {"query": "在仓库里找一下 parse_frontmatter 定义在哪", "expect": [], "why": "代码检索，不是知识库检索"},
+    {"query": "把这段代码整理一下", "expect": [], "why": "「整理」在这里指重构代码"},
+    {"query": "帮我把这个 markdown 文件的正文改一下", "expect": [], "why": "note-vault 从不改正文"},
+    {"query": "下载 https://example.com/data.csv 到本地", "expect": [], "why": "普通下载，不是网页剪藏"}
+  ]
+}

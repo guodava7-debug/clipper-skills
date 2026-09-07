@@ -1,0 +1,4 @@
+# web-clip 的运行依赖。note-vault 不需要任何第三方包。
+# 下界是实际用到的 API 的最早版本；不钉上界，安全补丁要能直接跟。
+requests>=2.28
+beautifulsoup4>=4.11
